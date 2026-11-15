@@ -1,0 +1,81 @@
+/* Sanctus Investment - concept E, second edition. Loaded after e.css.
+   1) the typewriter (name block, first-screen sentence, section titles)  2) a paragraph that fills in with scroll
+   3) page number roll  4) Portfolio and Partners as company marks */
+
+/* Korean in the old name block: Pretendard, only the syllables that are used (SIL OFL) */
+@font-face{font-family:"Pretendard Sub";src:url("fonts/pretendard-ko-sub.woff2") format("woff2");font-weight:500;font-style:normal;font-display:swap;unicode-range:U+AC00-D7A3}
+
+/* ---------- 1) typewriter: every glyph is in its final place and is only switched on ---------- */
+.tp{position:relative}
+.tp-on .tp:not(.tp-v){visibility:hidden}
+.tp.tp-cur::after,.tp.tp-pre::after{content:"";position:absolute;top:.12em;bottom:.1em;right:-.075em;width:max(2px,.05em);background:currentColor;visibility:visible;pointer-events:none}
+.tp.tp-pre::after{right:auto;left:-.075em}
+.tp.tp-rtl.tp-cur::after{right:auto;left:-.075em}
+.tp.tp-rtl.tp-pre::after{left:auto;right:-.075em}
+.tp-idle .tp.tp-cur::after,.tp-idle .tp.tp-pre::after{animation:tp-blink .4s steps(1,end) infinite}
+@keyframes tp-blink{0%{opacity:1}42%{opacity:0}100%{opacity:1}}
+[data-type="hero"].tp-idle .tp::after,[data-type="title"].tp-idle .tp::after{animation-duration:.56s}
+.tp-nb{display:inline-block;white-space:nowrap}
+/* before the script has run, a line that will be typed is not shown whole (it comes back by itself if the script never runs) */
+@media (prefers-reduced-motion:no-preference){.js [data-type]:not(.tp-on){visibility:hidden;animation:tp-wait 0s 2.4s forwards}}
+@keyframes tp-wait{to{visibility:visible}}
+/* the caret before the script has run: a zero-width box at the start of the title, drawn where the first glyph's caret will be */
+@media (prefers-reduced-motion:no-preference){
+  .js h1[data-type]:not(.tp-on)::before{content:"\200B";visibility:visible;padding-left:max(2px,.05em);margin-left:-.075em;margin-right:calc(.075em - max(2px,.05em));
+    background:linear-gradient(currentColor,currentColor) no-repeat 0 .12em/100% calc(100% - .22em);animation:tp-blink .56s steps(1,end) infinite}
+}
+
+/* the first-screen sentence is typed (it no longer settles from heavy to regular); words keep their own boxes */
+.hero-h[data-type]{word-spacing:.035em}
+.js .hero-h[data-type]:not(.done) .w::after{content:none}
+.js .hero-h[data-type]:not(.done) .wi{position:static;animation:none;white-space:nowrap}
+
+/* which wording of the name block is shown */
+html[data-nl="en"] [data-nl-block="ko"],html[data-nl="ko"] [data-nl-block="en"],html:not([data-nl]) [data-nl-block="en"]{display:none}
+
+/* home: the name line, top left of the first screen (where the old video had it) */
+.nameline{margin:clamp(22px,5.2vh,58px) 0 0;font:500 clamp(17px,2.05vw,30px)/1.35 "Pretendard Sub",var(--fd);letter-spacing:-.012em;color:var(--fg);max-width:32em;text-wrap:balance}
+.nameline .cn{color:var(--dim);font-weight:400;padding:0 .12em}
+.nameline bdi,.namehead bdi{font-weight:500}
+@media (max-width:640px){.nameline{margin-top:18px;font-size:17px;line-height:1.5}}
+
+/* About: the name block is the head of the page, as the video was */
+.namehead h1.long{font-family:"Pretendard Sub",var(--fd);font-size:clamp(1.7rem,4.5vw,4.2rem);line-height:1.12;max-width:none;text-wrap:balance}
+.namehead .nl-b{margin-top:clamp(26px,3.4vw,52px);max-width:none}
+.namehead .nl-b p{text-wrap:balance}
+.namehead .nl-b p{font:500 clamp(17px,1.9vw,27px)/1.62 "Pretendard Sub",var(--fb);letter-spacing:-.012em;color:var(--fg)}
+.namehead .nl-b p+p.gap{margin-top:0}
+html[data-nl="en"] .namehead .nl-b p{line-height:1.42;max-width:30em}
+@media (max-width:640px){.namehead h1.long{font-size:1.72rem;line-height:1.24}.namehead .nl-b p{font-size:16px;line-height:1.6}}
+
+/* ---------- 2) a paragraph that fills in with scroll ---------- */
+.fill-on [data-fill] .fw{opacity:.28;transition:opacity .28s linear}
+.fill-on [data-fill] .fw.on{opacity:1}
+
+/* ---------- 3) the page number turns over once (it is on the page from the first paint) ---------- */
+.roll{display:inline-block;overflow:hidden;vertical-align:bottom;line-height:1.4}
+.roll>b{display:inline-block;font-weight:inherit}
+@media (prefers-reduced-motion:no-preference){
+  .js .roll>b{animation:roll-turn .9s cubic-bezier(.3,0,.2,1) .5s 1 both}
+  @keyframes roll-turn{0%{transform:none}44%{transform:translateY(-115%)}44.01%{transform:translateY(115%)}100%{transform:none}}
+}
+
+/* ---------- 4) company marks (files from concept F: one-colour marks turned white; on hover a white tile and the mark in its own colours) ---------- */
+/* one white for every mark: the files carry their greys as transparency, so the white is laid under itself once (twice for the faint ones) */
+.wall .lg .m{filter:brightness(0) invert(1) drop-shadow(0 0 0 #fff);opacity:.96}
+.wall .lg .m[src*="m-pf-intocell."],.wall .lg .m[src*="m-pt-seoulccei."],.wall .lg .m[src*="m-pf-e8."],.wall .lg .m[src*="m-pf-dot."],.wall .lg .m[src*="m-pt-addview."],.wall .lg .m[src*="m-pt-kakaoinvestment."],.wall .lg .m[src*="m-pt-bnk."]{filter:brightness(0) invert(1) drop-shadow(0 0 0 #fff) drop-shadow(0 0 0 #fff)}
+.wall .lg .m[src*="m-pt-medici."]{filter:brightness(0) invert(1)}
+.wall.pf{grid-template-columns:repeat(4,1fr)}
+.wall.pf li{height:clamp(150px,15.4vw,216px);padding:0 10%}
+.wall.pf .lg{--k:1}
+.wall.pf li{padding-bottom:20px}
+.wall .nm{right:12px}
+.wall .nm{position:absolute;left:12px;bottom:11px;font:400 12px/1.2 var(--fb);color:var(--dim);transition:color .3s}
+@media (hover:hover){.wall li:hover .nm{color:#000}}
+.sec .wall.pf{margin-top:clamp(26px,3.4vw,48px);border-top:1px solid var(--line2)}
+.sec .wall.pf+.more{display:inline-flex;margin-top:clamp(26px,3.2vw,46px)}
+.page-wall{padding:0 var(--pad) clamp(48px,7vw,104px)}
+.page-wall .wall{border-top:1px solid var(--line2)}
+@media (max-width:900px){.wall.pf{grid-template-columns:repeat(2,1fr)}.wall.pf li{height:148px;padding:0 6% 30px}.wall.pf .lg{--k:.74}.wall .nm{font-size:11px}}
+/* the background word stands still (the light that passed over it every 26 s is gone) */
+.bgw::before{animation:none;background:none;-webkit-background-clip:border-box;background-clip:border-box;color:#1a1a1a}
